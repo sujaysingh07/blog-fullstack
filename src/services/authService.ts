@@ -3,14 +3,24 @@
 import api from "./api";
 
 export const signupAdmin = async (data: { name: string; email: string; password: string; }) => {
-  const response = await api.post("/auth/register", data);
-  return response.data;
+  // Point to the Next.js proxy route
+  const response = await fetch("/api/auth/signup", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  const responseData = await response.json();
+
+  if (!response.ok) {
+    throw new Error(responseData.detail || "Registration failed");
+  }
+
+  return responseData;
 };
 
-// export const loginAdmin = async (data) => {
-//   const response = await api.post("/auth/login", data);
-//   return response.data;
-// };
 
 export const getCurrentUser = async () => {
   const response = await fetch("/api/auth/me");

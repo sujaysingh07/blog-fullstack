@@ -1,6 +1,6 @@
 
 import { useMutation } from "@tanstack/react-query";
-import { loginUser } from "../services/authService";
+import { loginUser, signupAdmin } from "../services/authService";
 
 
 export const useLogin = () => {
@@ -9,3 +9,10 @@ export const useLogin = () => {
   });
 };
 
+
+export const useSignup = () => {
+
+  return useMutation({
+    mutationFn: signupAdmin,
+  });
+};
