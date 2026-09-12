@@ -27,8 +27,13 @@ export default function CreateBlogPage() {
     <BlogEditor
       initialData={NEW_BLOG_TEMPLATE}
       onBack={() => router.back()}
-      onSave={(newData) =>
-        createMutation.mutateAsync(newData, {
+      onSave={async (newData) => {
+        await createMutation.mutateAsync(
+          {
+            ...newData,
+            published_at: newData.published_at ?? undefined,
+          },
+          {
           onSuccess: () => {
             router.push("/admin/dashboard");
           },
@@ -36,8 +41,9 @@ export default function CreateBlogPage() {
             console.error("Failed to create blog:", error);
             alert("Failed to create the post.");
           },
-        })
-      }
+          },
+        );
+      }}
     />
   );
 }
