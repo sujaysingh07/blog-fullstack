@@ -167,7 +167,6 @@ export default function Signup() {
         {/* Footer */}
        <div className="text-center mt-6 space-y-4">
           <p className="text-sm text-gray-600">
-            Already have an account?{" "}
             <Link 
               href="/auth/login" 
               className="font-medium text-black hover:underline transition-colors"
