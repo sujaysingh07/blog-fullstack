@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { useLogin } from "../hooks/useAuth";
 import { getCurrentUser } from "../services/authService";
+import Link from "next/link";
 
 export default function Login() {
   const router = useRouter();
@@ -138,9 +139,21 @@ export default function Login() {
           </Formik>
         </div>
 
-        <p className="text-center text-xs text-gray-400 mt-6">
-          Admin access only
-        </p>
+       <div className="text-center mt-6 space-y-4">
+          <p className="text-sm text-gray-600">
+            Already have an account?{" "}
+            <Link 
+              href="/auth/signup" 
+              className="font-medium text-black hover:underline transition-colors"
+            >
+              Sign up here
+            </Link>
+          </p>
+          
+          <p className="text-xs text-gray-400">
+            Admin access only
+          </p>
+        </div>
       </div>
     </div>
   );
