@@ -2,7 +2,7 @@
 
 import api from "./api";
 
-export const signupAdmin = async (data) => {
+export const signupAdmin = async (data: { name: string; email: string; password: string; }) => {
   const response = await api.post("/auth/register", data);
   return response.data;
 };
@@ -28,7 +28,7 @@ export const logoutAdmin = async () => {
 };
 
 
-export const loginUser = async (values) => {
+export const loginUser = async (values: unknown) => {
   const response = await fetch("/api/auth/login", {
     method: "POST",
     headers: {

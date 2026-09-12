@@ -15,7 +15,7 @@ export const getBlogs = async (skip = 0, limit = 10,search = "") => {
   return response.json();
 };
 
-export const getBlogById = async (id) => {
+export const getBlogById = async (id: string) => {
   const response = await fetch(`/api/blogs/${id}`, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
@@ -28,7 +28,19 @@ export const getBlogById = async (id) => {
   return data;
 };
 
-export const createBlog = async (payload) => {
+interface CreateBlogPayload {
+  id?: number;
+  created_at?: string;
+  updated_at?: string;
+  published_at?: string;
+  [key: string]: unknown;
+}
+
+interface BlogResponse {
+  [key: string]: unknown;
+}
+
+export const createBlog = async (payload: CreateBlogPayload): Promise<BlogResponse> => {
   const { 
     id, 
     created_at, 
@@ -40,7 +52,7 @@ export const createBlog = async (payload) => {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
-    body: JSON.stringify(cleanPayload), // CRITICAL: Send the data to the server
+    body: JSON.stringify(cleanPayload), 
   });
  const responseData = await response.json();
   if (!response.ok) throw new Error(responseData.detail || "Creation failed");
@@ -49,7 +61,7 @@ export const createBlog = async (payload) => {
 };
 
 // src/services/blogService.js
-export const updateBlog = async (id, payload) => {
+export const updateBlog = async (id: number, payload: unknown) => {
   const response = await fetch(`/api/blogs/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
@@ -65,7 +77,7 @@ export const updateBlog = async (id, payload) => {
 
 
 
-export const deleteBlog = async (id) => {
+export const deleteBlog = async (id: unknown) => {
   const response = await fetch(`/api/blogs/${id}`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },

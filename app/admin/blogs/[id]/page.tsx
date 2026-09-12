@@ -6,8 +6,8 @@ import {useBlogById, useUpdateBlog } from "@/src/hooks/useBlog";
 
 export default function BlogEditPage() {
   const router = useRouter();
-  const params = useParams();
-  const blogId = Number(params.id);
+  const { id } = useParams<{ id: string }>();
+  const blogId = Number(id);
 
   // -----------------------------
   // Fetch blog
@@ -16,7 +16,7 @@ export default function BlogEditPage() {
     data: blog,
     isLoading,
     isError,
-  } = useBlogById(blogId) 
+  } = useBlogById(id)
   // -----------------------------
   // Update blog
   // -----------------------------
@@ -56,9 +56,8 @@ export default function BlogEditPage() {
   initialData={blog}
   onBack={() => router.back()}
   onSave={(updatedData) => 
-        // Pass the object { id, data } expected by the mutationFn
         updateMutation.mutateAsync(
-          { id: blogId, data: updatedData },
+          { id: blogId, data: updatedData } as never,
           {
             onSuccess: () => {
               router.push("/admin/dashboard"); // Navigate only after successful save

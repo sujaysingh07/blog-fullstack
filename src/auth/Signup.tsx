@@ -1,5 +1,5 @@
 "use client"
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field, ErrorMessage, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import { signupAdmin } from "../services/authService";
 
@@ -29,15 +29,19 @@ export default function Signup() {
       .oneOf([Yup.ref("password")], "Passwords must match"),
   });
 
-const handleSubmit = async (values, { setSubmitting }) => {
+const handleSubmit = async (values:typeof initialValues, { setSubmitting }: FormikHelpers<typeof initialValues>) => {
   try {
     const { confirmPassword, ...data } = values;
     console.log(values,confirmPassword)
     const response = await signupAdmin(data);
 
     console.log("Signup successful:", response);
-  } catch (error) {
-    console.error("Signup failed:", error.response.data.detail);
+  } catch (error: unknown) {
+    const detail =
+      (error as { response?: { data?: { detail?: string } } })?.response?.data
+        ?.detail ?? "Signup failed";
+
+    console.error("Signup failed:", detail);
   } finally {
     setSubmitting(false);
   }

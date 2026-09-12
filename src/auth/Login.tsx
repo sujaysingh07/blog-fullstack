@@ -28,7 +28,7 @@ export default function Login() {
   const loginMutation = useLogin();
   
 
-  const handleSubmit = async (values) => {
+  const handleSubmit = async (values: typeof initialValues) => {
     try {
       const response = await loginMutation.mutateAsync(values);
       

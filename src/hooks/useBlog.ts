@@ -14,7 +14,7 @@ export const useBlog = (page = 1, limit = 10, search = "") => {
   });
 };
 
-export const useBlogById = (id) => {
+export const useBlogById = (id:string) => {
   return useQuery({
     queryKey: ["blog", id], 
     queryFn: () => getBlogById(id), 
@@ -26,15 +26,10 @@ export const useUpdateBlog = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    // We expect an object with both the ID and the payload data
-    mutationFn: ({ id, data }) => updateBlog(id, data),
+    mutationFn: ({ id, data }: { id: number; data: Parameters<typeof updateBlog>[1] }) => updateBlog(id, data),
     
-    // React Query passes the returned data and the variables we sent to onSuccess
     onSuccess: (updatedBlog, variables) => {
-      // 1. Update the individual blog cache immediately using the ID from variables
       queryClient.setQueryData(["blog", variables.id], updatedBlog); 
-      
-      // 2. Refetch the main dashboard list in the background
       queryClient.invalidateQueries({
         queryKey: ["blogs"],
       });
