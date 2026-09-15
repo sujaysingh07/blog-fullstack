@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { useLogin } from "../hooks/useAuth";
 import { getCurrentUser } from "../services/authService";
 import Link from "next/link";
+import { PenSquare } from "lucide-react";
 
 export default function Login() {
   const router = useRouter();
@@ -52,19 +53,22 @@ export default function Login() {
 
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-background flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Admin Login</h1>
+          <div className="mx-auto mb-5 h-11 w-11 rounded-xl bg-primary text-primary-foreground flex items-center justify-center shadow-sm">
+            <PenSquare className="w-5 h-5" />
+          </div>
+          <h1 className="font-display text-3xl font-semibold text-foreground">Welcome back</h1>
 
-          <p className="mt-2 text-sm text-gray-500">
+          <p className="mt-2 text-sm text-muted-foreground">
             Sign in to your admin account
           </p>
         </div>
 
         {/* Login Card */}
-        <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6">
+        <div className="bg-card border border-border rounded-2xl shadow-sm p-6">
           <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}
@@ -76,7 +80,7 @@ export default function Login() {
                 <div>
                   <label
                     htmlFor="email"
-                    className="block text-sm font-medium text-gray-700 mb-1.5"
+                    className="block text-sm font-medium text-foreground mb-1.5"
                   >
                     Email Address
                   </label>
@@ -86,15 +90,15 @@ export default function Login() {
                     name="email"
                     type="email"
                     placeholder="admin@example.com"
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg
-                               outline-none focus:ring-2 focus:ring-black
-                               focus:border-transparent placeholder:text-black text-black"
+                    className="w-full px-4 py-2.5 border border-input rounded-lg bg-background
+                               outline-none focus:ring-2 focus:ring-ring
+                               focus:border-transparent placeholder:text-muted-foreground text-foreground"
                   />
 
                   <ErrorMessage
                     name="email"
                     component="p"
-                    className="mt-1 text-sm text-red-500"
+                    className="mt-1 text-sm text-destructive"
                   />
                 </div>
 
@@ -102,7 +106,7 @@ export default function Login() {
                 <div>
                   <label
                     htmlFor="password"
-                    className="block text-sm font-medium text-gray-700 mb-1.5"
+                    className="block text-sm font-medium text-foreground mb-1.5"
                   >
                     Password
                   </label>
@@ -112,15 +116,15 @@ export default function Login() {
                     name="password"
                     type="password"
                     placeholder="Enter your password"
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg
-                               outline-none focus:ring-2 focus:ring-black
-                                placeholder:text-black text-black"
+                    className="w-full px-4 py-2.5 border border-input rounded-lg bg-background
+                               outline-none focus:ring-2 focus:ring-ring
+                                placeholder:text-muted-foreground text-foreground"
                   />
 
                   <ErrorMessage
                     name="password"
                     component="p"
-                    className="mt-1 text-sm text-red-500"
+                    className="mt-1 text-sm text-destructive"
                   />
                 </div>
 
@@ -128,9 +132,9 @@ export default function Login() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-black text-white py-2.5 rounded-lg
-                             font-medium hover:bg-gray-800 transition
-                             disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-primary text-primary-foreground py-2.5 rounded-lg
+                             font-medium hover:bg-primary-hover transition
+                             disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                 >
                   {isSubmitting ? "Logging in..." : "Login"}
                 </button>
@@ -140,17 +144,17 @@ export default function Login() {
         </div>
 
        <div className="text-center mt-6 space-y-4">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-muted-foreground">
             Already have an account?{" "}
-            <Link 
-              href="/auth/signup" 
-              className="font-medium text-black hover:underline transition-colors"
+            <Link
+              href="/auth/signup"
+              className="font-medium text-primary hover:underline transition-colors"
             >
               Sign up here
             </Link>
           </p>
-          
-          <p className="text-xs text-gray-400">
+
+          <p className="text-xs text-muted-foreground/70">
             Admin access only
           </p>
         </div>

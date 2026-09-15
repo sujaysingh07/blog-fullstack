@@ -26,26 +26,26 @@ export default function BlogEditPage() {
   // -----------------------------
   if (isLoading) {
     return (
-      <div className="flex h-screen items-center justify-center bg-zinc-50">
-        <span className="text-sm text-zinc-500 animate-pulse">
+      <div className="flex h-screen items-center justify-center bg-muted/40">
+        <span className="text-sm text-muted-foreground animate-pulse">
           Loading post data...
         </span>
       </div>
     );
-  } 
+  }
 
   // -----------------------------
   // Error
   // -----------------------------
   if (isError || !blog) {
     return (
-      <div className="flex h-screen items-center justify-center bg-zinc-50">
-        <span className="text-sm text-red-500">
+      <div className="flex h-screen items-center justify-center bg-muted/40">
+        <span className="text-sm text-destructive">
           Failed to load blog post.
         </span>
       </div>
     );
-  } 
+  }
 
   // -----------------------------
   // Editor

@@ -39,58 +39,58 @@ export function BlogTableRow({ blog }: { blog: any }) {
   });
 
   return (
-    <tr className="hover:bg-zinc-50/50 transition-colors">
-      <td className="px-6 py-4 font-medium text-zinc-900">{blog.title}</td>
+    <tr className="hover:bg-muted/40 transition-colors">
+      <td className="px-6 py-4 font-medium text-foreground">{blog.title}</td>
       <td className="px-6 py-4">
         <span
           className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium border ${
             blog.status === "published"
-              ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-              : "bg-zinc-100 text-zinc-600 border-zinc-200"
+              ? "bg-success/10 text-success border-success/20"
+              : "bg-muted text-muted-foreground border-border"
           }`}
         >
           {blog.status.charAt(0).toUpperCase() + blog.status.slice(1)}
         </span>
       </td>
-      <td className="px-6 py-4 text-zinc-500">{localDate}</td>
+      <td className="px-6 py-4 text-muted-foreground">{localDate}</td>
 
-      {/* 
-          CRITICAL: The td must be `relative` so the absolute dropdown 
+      {/*
+          CRITICAL: The td must be `relative` so the absolute dropdown
           positions itself relative to this specific cell, not the whole page.
         */}
       <td className="px-6 py-4 text-right relative" ref={menuRef}>
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="text-zinc-400 hover:text-zinc-900 transition-colors p-1 rounded-md hover:bg-zinc-100"
+          className="text-muted-foreground hover:text-foreground transition-colors p-1 rounded-md hover:bg-muted cursor-pointer"
         >
           <MoreVertical className="w-4 h-4" />
         </button>
 
         {/* The Dropdown Menu */}
         {isMenuOpen && (
-          <div className="absolute right-8 top-12 w-40 bg-white border border-zinc-200 rounded-lg shadow-lg py-1 z-10 flex flex-col text-left">
+          <div className="absolute right-8 top-12 w-40 bg-popover border border-border rounded-lg shadow-lg py-1 z-10 flex flex-col text-left">
             <button
               onClick={() => window.open(`/blog/${blog.id}`, "_blank")} // Opens Live URL in new tab
-              className="flex items-center gap-2 px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 w-full transition-colors"
+              className="flex items-center gap-2 px-4 py-2 text-sm text-popover-foreground hover:bg-muted w-full transition-colors cursor-pointer"
             >
-              <Eye className="w-4 h-4 text-zinc-400" />
+              <Eye className="w-4 h-4 text-muted-foreground" />
               View Live
             </button>
             <button
               onClick={() => router.push(`/admin/blogs/${blog.id}`)}
-              className="flex items-center gap-2 px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 w-full transition-colors"
+              className="flex items-center gap-2 px-4 py-2 text-sm text-popover-foreground hover:bg-muted w-full transition-colors cursor-pointer"
             >
-              <Edit className="w-4 h-4 text-zinc-400" />
+              <Edit className="w-4 h-4 text-muted-foreground" />
               Edit
             </button>
 
-            <div className="h-px bg-zinc-200 my-1 mx-2"></div>
+            <div className="h-px bg-border my-1 mx-2"></div>
 
             <button
               onClick={handleDelete}
-              className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 w-full transition-colors"
+              className="flex items-center gap-2 px-4 py-2 text-sm text-destructive hover:bg-destructive/10 w-full transition-colors cursor-pointer"
             >
-              <Trash2 className="w-4 h-4 text-red-500" />
+              <Trash2 className="w-4 h-4 text-destructive" />
               Delete
             </button>
           </div>

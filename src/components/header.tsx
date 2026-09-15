@@ -30,24 +30,24 @@ export default function Header() {
   }, [searchTerm]);
 
   return (
-    <header className="h-16 bg-white border-b border-zinc-200 flex items-center justify-between px-8">
-      <div className="flex items-center gap-4 text-zinc-400 w-96">
-        <Search className="w-4 h-4" />
-        <input 
-          type="text" 
+    <header className="h-16 shrink-0 bg-card border-b border-border flex items-center justify-between px-8">
+      <div className="flex items-center gap-3 w-full max-w-sm rounded-lg border border-border bg-secondary/60 px-3 py-2 focus-within:ring-2 focus-within:ring-ring transition-shadow">
+        <Search className="w-4 h-4 text-muted-foreground shrink-0" />
+        <input
+          type="text"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Search blogs by title..." 
-          className="bg-transparent border-none focus:outline-none text-sm text-zinc-900 w-full placeholder:text-zinc-400"
+          placeholder="Search blogs by title..."
+          className="bg-transparent border-none focus:outline-none text-sm text-foreground w-full placeholder:text-muted-foreground"
         />
       </div>
-      
-      <div className="flex items-center gap-4">
+
+      <div className="flex items-center gap-3">
         <div className="text-right">
-          <p className="text-sm font-medium text-zinc-900">{user?.name}</p>
-          <p className="text-xs text-zinc-500">{user?.email}</p>
+          <p className="text-sm font-medium text-foreground">{user?.name}</p>
+          <p className="text-xs text-muted-foreground">{user?.email}</p>
         </div>
-        <div className="h-9 w-9 rounded-full bg-zinc-200 flex items-center justify-center text-sm font-semibold text-zinc-600 border border-zinc-300">
+        <div className="h-9 w-9 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-semibold">
           {user?.name.charAt(0)}
         </div>
       </div>

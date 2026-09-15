@@ -5,6 +5,7 @@ import * as Yup from "yup";
 import { useRouter } from "next/navigation";
 import { signupAdmin } from "../services/authService";
 import Link from "next/link";
+import { PenSquare } from "lucide-react";
 export default function Signup() {
   const router = useRouter(); // 1. Add router for navigation
 
@@ -60,21 +61,24 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-background flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
-        
+
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">
-            Create Admin Account
+          <div className="mx-auto mb-5 h-11 w-11 rounded-xl bg-primary text-primary-foreground flex items-center justify-center shadow-sm">
+            <PenSquare className="w-5 h-5" />
+          </div>
+          <h1 className="font-display text-3xl font-semibold text-foreground">
+            Create your account
           </h1>
-          <p className="mt-2 text-sm text-gray-500">
+          <p className="mt-2 text-sm text-muted-foreground">
             Register your administrator account
           </p>
         </div>
 
         {/* Signup Card */}
-        <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6">
+        <div className="bg-card border border-border rounded-2xl shadow-sm p-6">
           <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}
@@ -83,17 +87,17 @@ export default function Signup() {
             {/* 4. Extract 'status' from Formik render props */}
             {({ isSubmitting, status }) => (
               <Form className="space-y-5">
-                
+
                 {/* 5. Display Backend Error Banner */}
                 {status && (
-                  <div className="p-3 text-sm font-medium text-red-600 bg-red-50 border border-red-200 rounded-lg">
+                  <div className="p-3 text-sm font-medium text-destructive bg-destructive/10 border border-destructive/20 rounded-lg">
                     {status}
                   </div>
                 )}
 
                 {/* Name */}
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1.5">
+                  <label htmlFor="name" className="block text-sm font-medium text-foreground mb-1.5">
                     Full Name
                   </label>
                   <Field
@@ -101,14 +105,14 @@ export default function Signup() {
                     name="name"
                     type="text"
                     placeholder="Enter your full name"
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-black focus:border-transparent placeholder:text-gray-400 text-black"
+                    className="w-full px-4 py-2.5 border border-input rounded-lg bg-background outline-none focus:ring-2 focus:ring-ring focus:border-transparent placeholder:text-muted-foreground text-foreground"
                   />
-                  <ErrorMessage name="name" component="p" className="mt-1 text-sm text-red-500" />
+                  <ErrorMessage name="name" component="p" className="mt-1 text-sm text-destructive" />
                 </div>
 
                 {/* Email */}
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1.5">
+                  <label htmlFor="email" className="block text-sm font-medium text-foreground mb-1.5">
                     Email Address
                   </label>
                   <Field
@@ -116,14 +120,14 @@ export default function Signup() {
                     name="email"
                     type="email"
                     placeholder="admin@example.com"
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-black focus:border-transparent placeholder:text-gray-400 text-black"
+                    className="w-full px-4 py-2.5 border border-input rounded-lg bg-background outline-none focus:ring-2 focus:ring-ring focus:border-transparent placeholder:text-muted-foreground text-foreground"
                   />
-                  <ErrorMessage name="email" component="p" className="mt-1 text-sm text-red-500" />
+                  <ErrorMessage name="email" component="p" className="mt-1 text-sm text-destructive" />
                 </div>
 
                 {/* Password */}
                 <div>
-                  <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1.5">
+                  <label htmlFor="password" className="block text-sm font-medium text-foreground mb-1.5">
                     Password
                   </label>
                   <Field
@@ -131,14 +135,14 @@ export default function Signup() {
                     name="password"
                     type="password"
                     placeholder="Create a password"
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-black focus:border-transparent placeholder:text-gray-400 text-black"
+                    className="w-full px-4 py-2.5 border border-input rounded-lg bg-background outline-none focus:ring-2 focus:ring-ring focus:border-transparent placeholder:text-muted-foreground text-foreground"
                   />
-                  <ErrorMessage name="password" component="p" className="mt-1 text-sm text-red-500" />
+                  <ErrorMessage name="password" component="p" className="mt-1 text-sm text-destructive" />
                 </div>
 
                 {/* Confirm Password */}
                 <div>
-                  <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1.5">
+                  <label htmlFor="confirmPassword" className="block text-sm font-medium text-foreground mb-1.5">
                     Confirm Password
                   </label>
                   <Field
@@ -146,16 +150,16 @@ export default function Signup() {
                     name="confirmPassword"
                     type="password"
                     placeholder="Confirm your password"
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-black focus:border-transparent placeholder:text-gray-400 text-black"
+                    className="w-full px-4 py-2.5 border border-input rounded-lg bg-background outline-none focus:ring-2 focus:ring-ring focus:border-transparent placeholder:text-muted-foreground text-foreground"
                   />
-                  <ErrorMessage name="confirmPassword" component="p" className="mt-1 text-sm text-red-500" />
+                  <ErrorMessage name="confirmPassword" component="p" className="mt-1 text-sm text-destructive" />
                 </div>
 
                 {/* Submit */}
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-black text-white py-2.5 rounded-lg font-medium hover:bg-gray-800 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-primary text-primary-foreground py-2.5 rounded-lg font-medium hover:bg-primary-hover transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                 >
                   {isSubmitting ? "Creating Account..." : "Create Admin Account"}
                 </button>
@@ -166,16 +170,16 @@ export default function Signup() {
 
         {/* Footer */}
        <div className="text-center mt-6 space-y-4">
-          <p className="text-sm text-gray-600">
-            <Link 
-              href="/auth/login" 
-              className="font-medium text-black hover:underline transition-colors"
+          <p className="text-sm text-muted-foreground">
+            <Link
+              href="/auth/login"
+              className="font-medium text-primary hover:underline transition-colors"
             >
               Log in here
             </Link>
           </p>
-          
-          <p className="text-xs text-gray-400">
+
+          <p className="text-xs text-muted-foreground/70">
             Admin access only
           </p>
         </div>
