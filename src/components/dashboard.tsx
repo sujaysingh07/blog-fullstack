@@ -22,7 +22,7 @@ export default function BlogDashboard() {
 
   // Pass searchQuery into your hook
   const { data, isLoading, isError } = useBlog(page, limit, searchQuery);
-
+console.log(data)
   // --- RESTORED MISSING LOGIC ---
   if (isLoading) {
     return (

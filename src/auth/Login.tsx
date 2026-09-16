@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
@@ -9,11 +10,12 @@ import { useRouter } from "next/navigation";
 import { useLogin } from "../hooks/useAuth";
 import { getCurrentUser } from "../services/authService";
 import Link from "next/link";
-import { PenSquare } from "lucide-react";
+import { Eye, EyeOff, PenSquare } from "lucide-react";
 
 export default function Login() {
   const router = useRouter();
   const dispatch = useDispatch();
+  const [showPassword, setShowPassword] = useState(false);
   const initialValues = {
     email: "",
     password: "",
@@ -38,7 +40,7 @@ export default function Login() {
       dispatch(
         setCredentials({
           user: user,
-          accessToken: response.accessToken,
+          accessToken: response.access_token ?? response.accessToken,
         }),
       );
 
@@ -111,15 +113,26 @@ export default function Login() {
                     Password
                   </label>
 
-                  <Field
-                    id="password"
-                    name="password"
-                    type="password"
-                    placeholder="Enter your password"
-                    className="w-full px-4 py-2.5 border border-input rounded-lg bg-background
-                               outline-none focus:ring-2 focus:ring-ring
-                                placeholder:text-muted-foreground text-foreground"
-                  />
+                  <div className="relative">
+                    <Field
+                      id="password"
+                      name="password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Enter your password"
+                      className="w-full px-4 py-2.5 pr-11 border border-input rounded-lg bg-background
+                                 outline-none focus:ring-2 focus:ring-ring
+                                  placeholder:text-muted-foreground text-foreground"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((prev) => !prev)}
+                      className="absolute inset-y-0 right-0 flex items-center px-3 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                      aria-label={showPassword ? "Hide password" : "Show password"}
+                      tabIndex={-1}
+                    >
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
 
                   <ErrorMessage
                     name="password"

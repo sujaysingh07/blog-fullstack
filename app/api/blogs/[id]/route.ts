@@ -10,13 +10,15 @@ export async function GET(
   // AWAIT the params object before accessing properties
   const resolvedParams = await params;
   const id = resolvedParams.id;
+  const cookie = request.headers.get("cookie");
 
   const backendResponse = await fetch(`${BACKEND_URL}/blogs/${id}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
+      Cookie: cookie ?? "",
     },
-  });   
+  });
 
   const data = await backendResponse.json();
 
@@ -34,7 +36,8 @@ export async function PUT(
 
     // 2. Extract the request body sent from the frontend
     const body = await request.json();
-
+    // 3. Extract the auth cookie to prove the user is logged in
+    const cookie = request.headers.get("cookie");
 
     // 4. Forward the PUT request to FastAPI
     const backendResponse = await fetch(`${BACKEND_URL}/blogs/${id}`, {
@@ -42,6 +45,7 @@ export async function PUT(
       headers: {
         "Content-Type": "application/json",
         // Forward the cookie so FastAPI can authenticate the user
+        Cookie: cookie ?? "",
       },
       body: JSON.stringify(body),
     });
@@ -70,15 +74,14 @@ export async function DELETE(
     const id = resolvedParams.id;
 
     // 1. Extract auth cookie (Required for protected backend routes)
-    // const cookieStore = cookies();
-    // const token = cookieStore.get("access_token")?.value;
+    const cookie = request.headers.get("cookie");
 
     // 2. Forward the DELETE request to FastAPI
     const backendResponse = await fetch(`${BACKEND_URL}/blogs/${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        // ...(token && { Cookie: `access_token=${token}` }),
+        Cookie: cookie ?? "",
       },
     });
 

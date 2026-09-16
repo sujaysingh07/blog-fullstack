@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-// import { cookies } from "next/headers";
 
 const BACKEND_URL = process.env.API_URL
 
 export async function GET(request: NextRequest) {
   try {
-    // const cookieStore = cookies();
-    // const token = cookieStore.get("access_token")?.value;
+    const cookie = request.headers.get("cookie");
 
     // 1. Extract pagination params from the incoming frontend request
     const searchParams = request.nextUrl.searchParams;
@@ -17,12 +15,12 @@ export async function GET(request: NextRequest) {
 
     // 2. Append them to the FastAPI request
     const backendResponse = await fetch(
-      `${BACKEND_URL}/blogs?skip=${skip}&limit=${limit}&search=${search}`, 
+      `${BACKEND_URL}/blogs?skip=${skip}&limit=${limit}&search=${search}`,
       {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          // ...(token && { Cookie: `access_token=${token}` }),
+          Cookie: cookie ?? "",
         },
       }
     );
@@ -42,8 +40,7 @@ export async function POST(request: NextRequest) {
     // 1. Extract the JSON payload sent from your React Query mutation
     const body = await request.json();
     // 2. Extract the auth cookie to prove the user is logged in
-    // const cookieStore = cookies();
-    // const token = cookieStore.get("access_token")?.value;
+    const cookie = request.headers.get("cookie");
 
     // 3. Forward the POST request to your FastAPI backend
     const backendResponse = await fetch(`${BACKEND_URL}/blogs`, {
@@ -51,7 +48,7 @@ export async function POST(request: NextRequest) {
       headers: {
         "Content-Type": "application/json",
         // Forward the cookie so FastAPI can authenticate the user
-        // ...(token && { Cookie: `access_token=${token}` }),
+        Cookie: cookie ?? "",
       },
       // Send the body exactly as received from the frontend
       body: JSON.stringify(body),

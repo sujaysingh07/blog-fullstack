@@ -1,5 +1,5 @@
 'use client'
-import { FileText, LogOut, PenSquare } from "lucide-react";
+import { ExternalLink, FileText, LogOut, PenSquare } from "lucide-react";
 import { logoutUser } from "../services/authService";
 import { useRouter } from "next/navigation";
 
@@ -26,7 +26,16 @@ export default function Sidebar() {
         </a>
       </nav>
 
-      <div className="p-4 border-t border-border">
+      <div className="p-4 border-t border-border space-y-1">
+        <a
+          href="/blog"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+        >
+          <ExternalLink className="w-4 h-4" />
+          View site
+        </a>
         <button
           onClick={() => [logoutUser(),router.push("/auth/login")]}
           className="flex w-full items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors cursor-pointer"

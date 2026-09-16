@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { PenLine, LayoutDashboard, Sparkles } from "lucide-react";
+import { PenLine, LayoutDashboard, Sparkles, BookOpen } from "lucide-react";
 
 export default function Home() {
   return (
@@ -34,6 +34,14 @@ export default function Home() {
             Create an account
           </Link>
         </div>
+
+        <Link
+          href="/blog"
+          className="mt-8 inline-flex items-center justify-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+        >
+          <BookOpen className="w-4 h-4" />
+          Or read the blog
+        </Link>
       </div>
     </main>
   );

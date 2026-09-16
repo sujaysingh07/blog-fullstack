@@ -1,14 +1,16 @@
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
+import Link from "next/link";
 import ReactMarkdown from "react-markdown";
-import { Calendar, Clock, Hash, Tag } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, Hash, Tag } from "lucide-react";
 
 // 1. Server-side fetch (Next.js automatically dedupes this request)
 async function getLiveBlog(id: string) {
-  const BACKEND_URL = process.env.API_URL || "http://127.0.0.1:8000";
-  const response = await fetch(`${BACKEND_URL}/blogs/${id}`, {
+  const BACKEND_URL = process.env.API_URL;
+  const response = await fetch(`${BACKEND_URL}/blogs/public/${id}`, {
     next: { revalidate: 60 }, 
   });
+  console.log(response)
   if (!response.ok) return null;
   return response.json();
 }
@@ -68,6 +70,16 @@ export default async function LiveBlogPage({
 
   return (
     <main className="min-h-screen bg-muted/40 py-12 px-4">
+      <div className="max-w-4xl mx-auto mb-6">
+        <Link
+          href="/blog"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          All posts
+        </Link>
+      </div>
+
       <article className="max-w-4xl mx-auto bg-card rounded-2xl shadow-sm border border-border overflow-hidden">
 
         {/* --- 1. HEADER SECTION --- */}

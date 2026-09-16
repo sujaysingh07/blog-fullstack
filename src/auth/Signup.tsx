@@ -1,13 +1,16 @@
 "use client";
 
+import { useState } from "react";
 import { Formik, Form, Field, ErrorMessage, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/navigation";
 import { signupAdmin } from "../services/authService";
 import Link from "next/link";
-import { PenSquare } from "lucide-react";
+import { Eye, EyeOff, PenSquare } from "lucide-react";
 export default function Signup() {
   const router = useRouter(); // 1. Add router for navigation
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const initialValues = {
     name: "",
@@ -130,13 +133,24 @@ export default function Signup() {
                   <label htmlFor="password" className="block text-sm font-medium text-foreground mb-1.5">
                     Password
                   </label>
-                  <Field
-                    id="password"
-                    name="password"
-                    type="password"
-                    placeholder="Create a password"
-                    className="w-full px-4 py-2.5 border border-input rounded-lg bg-background outline-none focus:ring-2 focus:ring-ring focus:border-transparent placeholder:text-muted-foreground text-foreground"
-                  />
+                  <div className="relative">
+                    <Field
+                      id="password"
+                      name="password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Create a password"
+                      className="w-full px-4 py-2.5 pr-11 border border-input rounded-lg bg-background outline-none focus:ring-2 focus:ring-ring focus:border-transparent placeholder:text-muted-foreground text-foreground"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((prev) => !prev)}
+                      className="absolute inset-y-0 right-0 flex items-center px-3 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                      aria-label={showPassword ? "Hide password" : "Show password"}
+                      tabIndex={-1}
+                    >
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
                   <ErrorMessage name="password" component="p" className="mt-1 text-sm text-destructive" />
                 </div>
 
@@ -145,13 +159,24 @@ export default function Signup() {
                   <label htmlFor="confirmPassword" className="block text-sm font-medium text-foreground mb-1.5">
                     Confirm Password
                   </label>
-                  <Field
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    type="password"
-                    placeholder="Confirm your password"
-                    className="w-full px-4 py-2.5 border border-input rounded-lg bg-background outline-none focus:ring-2 focus:ring-ring focus:border-transparent placeholder:text-muted-foreground text-foreground"
-                  />
+                  <div className="relative">
+                    <Field
+                      id="confirmPassword"
+                      name="confirmPassword"
+                      type={showConfirmPassword ? "text" : "password"}
+                      placeholder="Confirm your password"
+                      className="w-full px-4 py-2.5 pr-11 border border-input rounded-lg bg-background outline-none focus:ring-2 focus:ring-ring focus:border-transparent placeholder:text-muted-foreground text-foreground"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword((prev) => !prev)}
+                      className="absolute inset-y-0 right-0 flex items-center px-3 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                      aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                      tabIndex={-1}
+                    >
+                      {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
                   <ErrorMessage name="confirmPassword" component="p" className="mt-1 text-sm text-destructive" />
                 </div>
 

@@ -1,31 +1,33 @@
+interface ApiErrorBody {
+  detail?: string;
+  [key: string]: unknown;
+}
 
-export const getBlogs = async (skip = 0, limit = 10,search = "") => {
- let url = `/api/blogs?skip=${skip}&limit=${limit}`;
-  if (search) {
-    url += `&search=${encodeURIComponent(search)}`;
-  }
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function apiRequest<T = any>(url: string, options: RequestInit = {}): Promise<T> {
   const response = await fetch(url, {
-    method: "GET",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
+    ...options,
   });
-  
-  if (!response.ok) throw new Error("Failed to fetch blogs");
-  return response.json();
+
+  const data = (await response.json().catch(() => null)) as ApiErrorBody | null;
+  if (!response.ok) {
+    throw new Error(data?.detail || "Request failed");
+  }
+
+  return data as T;
+}
+
+export const getBlogs = async (skip = 0, limit = 10, search = "") => {
+  const params = new URLSearchParams({ skip: String(skip), limit: String(limit) });
+  if (search) params.set("search", search);
+
+  return apiRequest(`/api/blogs?${params.toString()}`);
 };
 
 export const getBlogById = async (id: string) => {
-  const response = await fetch(`/api/blogs/${id}`, {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
-  });
-
-  const data = await response.json();
-  if (!response.ok) throw new Error(data.detail || "Fetching failed");
-  
-  return data;
+  return apiRequest(`/api/blogs/${id}`);
 };
 
 interface CreateBlogPayload {
@@ -41,51 +43,23 @@ interface BlogResponse {
 }
 
 export const createBlog = async (payload: CreateBlogPayload): Promise<BlogResponse> => {
-  const { 
-    id, 
-    created_at, 
-    updated_at, 
-    published_at, 
-    ...cleanPayload 
-  } = payload;
-  const response = await fetch(`/api/blogs`,  {
+  const { id, created_at, updated_at, published_at, ...cleanPayload } = payload;
+
+  return apiRequest<BlogResponse>(`/api/blogs`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    body: JSON.stringify(cleanPayload), 
+    body: JSON.stringify(cleanPayload),
   });
- const responseData = await response.json();
-  if (!response.ok) throw new Error(responseData.detail || "Creation failed");
-  
-  return responseData;
 };
 
-// src/services/blogService.js
 export const updateBlog = async (id: number, payload: unknown) => {
-  const response = await fetch(`/api/blogs/${id}`, {
+  return apiRequest(`/api/blogs/${id}`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    body: JSON.stringify(payload), // CRITICAL: Send the data to the server
+    body: JSON.stringify(payload),
   });
-
-  const responseData = await response.json();
-  if (!response.ok) throw new Error(responseData.detail || "Update failed");
-  
-  return responseData;
 };
-
-
 
 export const deleteBlog = async (id: unknown) => {
-  const response = await fetch(`/api/blogs/${id}`, {
+  return apiRequest(`/api/blogs/${id}`, {
     method: "DELETE",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
   });
-
-  const responseData = await response.json();
-  if (!response.ok) throw new Error(responseData.detail || "Deletion failed");
-  
-  return responseData;
 };

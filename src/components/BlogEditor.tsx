@@ -1,8 +1,16 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { ArrowLeft, Save, Eye, Edit2, Globe, Search } from "lucide-react";
+
+// Mirrors the slug Yup rule (`^[a-z0-9-]+$`): lowercase, spaces -> hyphens, everything else stripped.
+const slugify = (value: string) =>
+  value
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-");
 
 export interface BlogPost {
   id: number;
@@ -44,16 +52,32 @@ export default function BlogEditor({ initialData, onBack, onSave }: BlogEditorPr
   // Unique key for local storage (differentiates between editing an existing post vs creating a new one)
   const storageKey = `blog_autosave_${initialData.id}`;
 
+  // Once the admin edits the slug by hand, stop overwriting it from the title.
+  const slugEditedManuallyRef = useRef(false);
+
   const formik = useFormik({
     initialValues: initialData,
     validationSchema: BlogSchema,
     onSubmit: async (values, { setSubmitting }) => {
       await onSave(values);
       // Clear the local storage cache only when the backend save is fully successful
-      localStorage.removeItem(storageKey); 
+      localStorage.removeItem(storageKey);
       setSubmitting(false);
     },
   });
+
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    formik.setFieldValue("title", value);
+    if (!slugEditedManuallyRef.current) {
+      formik.setFieldValue("slug", slugify(value));
+    }
+  };
+
+  const handleSlugChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    slugEditedManuallyRef.current = true;
+    formik.setFieldValue("slug", slugify(e.target.value));
+  };
 
   // 1. RESTORE DRAFT ON MOUNT
   useEffect(() => {
@@ -154,7 +178,7 @@ export default function BlogEditor({ initialData, onBack, onSave }: BlogEditorPr
                   type="text"
                   name="title"
                   value={formik.values.title}
-                  onChange={formik.handleChange}
+                  onChange={handleTitleChange}
                   onBlur={formik.handleBlur}
                   className={`w-full text-xl font-semibold bg-transparent border rounded-lg p-3 text-foreground focus:outline-none focus:ring-2 focus:border-transparent font-sans ${
                     formik.touched.title && formik.errors.title ? "border-destructive focus:ring-destructive" : "border-input focus:ring-ring"
@@ -180,7 +204,7 @@ export default function BlogEditor({ initialData, onBack, onSave }: BlogEditorPr
                     type="text"
                     name="slug"
                     value={formik.values.slug}
-                    onChange={formik.handleChange}
+                    onChange={handleSlugChange}
                     onBlur={formik.handleBlur}
                     className="w-full bg-transparent p-2 text-sm text-foreground focus:outline-none"
                   />
