@@ -10,7 +10,6 @@ async function getLiveBlog(id: string) {
   const response = await fetch(`${BACKEND_URL}/blogs/public/${id}`, {
     next: { revalidate: 60 }, 
   });
-  console.log(response)
   if (!response.ok) return null;
   return response.json();
 }

@@ -87,15 +87,31 @@ export default function BlogEditor({ initialData, onBack, onSave }: BlogEditorPr
     try {
       const generated = await generateBlogMutation.mutateAsync(aiTopic.trim());
       slugEditedManuallyRef.current = true;
-      formik.setValues({
+
+      // Clamp AI output to the same limits BlogSchema enforces, and run the
+      // slug through the same sanitizer manual edits use, so generated
+      // content can't silently fail validation and disable Save.
+      await formik.setValues({
         ...formik.values,
-        title: generated.title,
-        slug: generated.slug,
-        description: generated.description,
+        title: generated.title.slice(0, 100),
+        slug: slugify(generated.slug || generated.title),
+        description: generated.description.slice(0, 300),
         body_content: generated.body_content,
         status: generated.status,
-        meta_title: generated.meta_title,
-        meta_description: generated.meta_description,
+        meta_title: generated.meta_title.slice(0, 60),
+        meta_description: generated.meta_description.slice(0, 160),
+      });
+
+      // Mark the generated fields touched so any remaining validation error
+      // (e.g. empty body_content) actually renders instead of just quietly
+      // disabling the Save button.
+      formik.setTouched({
+        title: true,
+        slug: true,
+        description: true,
+        body_content: true,
+        meta_title: true,
+        meta_description: true,
       });
     } catch (error) {
       console.error("Failed to generate blog with AI:", error);
@@ -138,8 +154,6 @@ export default function BlogEditor({ initialData, onBack, onSave }: BlogEditorPr
       month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit",
     });
   };
-
-  console.log(formik.isValid)
 
   return (
     <form onSubmit={formik.handleSubmit} className="flex flex-col h-full bg-muted/40">
@@ -359,10 +373,10 @@ export default function BlogEditor({ initialData, onBack, onSave }: BlogEditorPr
                     value={formik.values.status}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    className="w-full bg-transparent border border-input rounded-md p-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                    className="w-full px-4 py-2.5 border border-input rounded-lg bg-background outline-none focus:ring-2 focus:ring-ring focus:border-transparent text-foreground"
                   >
-                    <option value="draft">Draft</option>
-                    <option value="published">Published</option>
+                    <option value="draft" className="bg-background text-foreground">Draft</option>
+                    <option value="published" className="bg-background text-foreground">Published</option>
                   </select>
                 </div>
                 <div className="pt-2 border-t border-border">
