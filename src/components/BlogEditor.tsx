@@ -2,7 +2,8 @@
 import { useState, useEffect, useRef } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { ArrowLeft, Save, Eye, Edit2, Globe, Search } from "lucide-react";
+import { ArrowLeft, Save, Eye, Edit2, Globe, Search, Sparkles } from "lucide-react";
+import { useGenerateBlog } from "../hooks/useAi";
 
 // Mirrors the slug Yup rule (`^[a-z0-9-]+$`): lowercase, spaces -> hyphens, everything else stripped.
 const slugify = (value: string) =>
@@ -48,6 +49,9 @@ const BlogSchema = Yup.object().shape({
 export default function BlogEditor({ initialData, onBack, onSave }: BlogEditorProps) {
   const [isPreviewMode, setIsPreviewMode] = useState(false);
   const [lastSavedTime, setLastSavedTime] = useState<string | null>(null);
+  const [aiTopic, setAiTopic] = useState("");
+
+  const generateBlogMutation = useGenerateBlog();
 
   // Unique key for local storage (differentiates between editing an existing post vs creating a new one)
   const storageKey = `blog_autosave_${initialData.id}`;
@@ -60,7 +64,6 @@ export default function BlogEditor({ initialData, onBack, onSave }: BlogEditorPr
     validationSchema: BlogSchema,
     onSubmit: async (values, { setSubmitting }) => {
       await onSave(values);
-      // Clear the local storage cache only when the backend save is fully successful
       localStorage.removeItem(storageKey);
       setSubmitting(false);
     },
@@ -77,6 +80,26 @@ export default function BlogEditor({ initialData, onBack, onSave }: BlogEditorPr
   const handleSlugChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     slugEditedManuallyRef.current = true;
     formik.setFieldValue("slug", slugify(e.target.value));
+  };
+
+  const handleGenerateWithAi = async () => {
+    if (!aiTopic.trim()) return;
+    try {
+      const generated = await generateBlogMutation.mutateAsync(aiTopic.trim());
+      slugEditedManuallyRef.current = true;
+      formik.setValues({
+        ...formik.values,
+        title: generated.title,
+        slug: generated.slug,
+        description: generated.description,
+        body_content: generated.body_content,
+        status: generated.status,
+        meta_title: generated.meta_title,
+        meta_description: generated.meta_description,
+      });
+    } catch (error) {
+      console.error("Failed to generate blog with AI:", error);
+    }
   };
 
   // 1. RESTORE DRAFT ON MOUNT
@@ -115,6 +138,8 @@ export default function BlogEditor({ initialData, onBack, onSave }: BlogEditorPr
       month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit",
     });
   };
+
+  console.log(formik.isValid)
 
   return (
     <form onSubmit={formik.handleSubmit} className="flex flex-col h-full bg-muted/40">
@@ -169,6 +194,46 @@ export default function BlogEditor({ initialData, onBack, onSave }: BlogEditorPr
           
           {/* Left Column: Primary Content */}
           <div className="lg:col-span-2 space-y-6">
+
+            {/* AI Blog Generator */}
+            <div className="bg-card p-5 rounded-xl border border-border shadow-sm space-y-3">
+              <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-muted-foreground" />
+                Generate with AI
+              </h3>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <input
+                  type="text"
+                  value={aiTopic}
+                  onChange={(e) => setAiTopic(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleGenerateWithAi();
+                    }
+                  }}
+                  placeholder="Describe a topic, e.g. UPI 0.4% MDR charges..."
+                  className="flex-1 bg-transparent border border-input rounded-lg p-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+                />
+                <button
+                  type="button"
+                  onClick={handleGenerateWithAi}
+                  disabled={generateBlogMutation.isPending || !aiTopic.trim()}
+                  className="flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-hover transition-colors shadow-sm disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer whitespace-nowrap"
+                >
+                  <Sparkles className="w-4 h-4" />
+                  {generateBlogMutation.isPending ? "Generating..." : "Generate Blog"}
+                </button>
+              </div>
+              {generateBlogMutation.isError && (
+                <p className="text-destructive text-xs">
+                  {generateBlogMutation.error instanceof Error
+                    ? generateBlogMutation.error.message
+                    : "Failed to generate blog."}
+                </p>
+              )}
+            </div>
+
             <div className="bg-card p-6 rounded-xl border border-border shadow-sm space-y-6">
 
               {/* Title */}

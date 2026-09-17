@@ -2,7 +2,7 @@
 
 import api from "./api";
 
-export const signupAdmin = async (data: { name: string; email: string; password: string; }) => {
+export const signupAdmin = async (data: { name: string; email: string; password: string; role: string; }) => {
   // Point to the Next.js proxy route
   const response = await fetch("/api/auth/signup", {
     method: "POST",
@@ -24,7 +24,6 @@ export const signupAdmin = async (data: { name: string; email: string; password:
 
 export const getCurrentUser = async () => {
   const response = await fetch("/api/auth/me");
-  console.log(response)
   if (!response.ok) {
     throw new Error("Not authenticated");
   }

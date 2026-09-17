@@ -35,16 +35,21 @@ export default function Login() {
   const handleSubmit = async (values: typeof initialValues) => {
     try {
       const response = await loginMutation.mutateAsync(values);
-      
-      const user = await getCurrentUser()
+      const user = await getCurrentUser();
+
+      // The real token lives in an httpOnly cookie set by the backend and is
+      // never readable from JS. Fall back to a truthy session marker so Redux
+      // reflects "we have an active session" instead of always being falsy.
+      const accessToken = response.access_token ?? response.accessToken ?? "session";
+
       dispatch(
         setCredentials({
-          user: user,
-          accessToken: response.access_token ?? response.accessToken,
+          user,
+          accessToken,
         }),
       );
 
-      router.push("/admin/dashboard");
+      router.push(user.role === "admin" ? "/admin/dashboard" : "/blog");
     } catch (error) {
       console.error(error);
     }
@@ -167,9 +172,7 @@ export default function Login() {
             </Link>
           </p>
 
-          <p className="text-xs text-muted-foreground/70">
-            Admin access only
-          </p>
+         
         </div>
       </div>
     </div>

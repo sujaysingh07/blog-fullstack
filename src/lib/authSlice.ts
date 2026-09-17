@@ -1,10 +1,13 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+export type UserRole = "admin" | "user";
+
 // 1. Define the User type to match your backend response
 export type User = {
   id: number;
   name: string;
   email: string;
+  role: UserRole;
 };
 
 // 2. Define the structure of the entire Auth state

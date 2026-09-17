@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistStore, Persistor } from 'redux-persist';
 import { AppStore, makeStore } from '@/src/lib/store';
+import AuthGuard from '@/src/components/AuthGuard';
 
 export default function StoreProvider({ children }: { children: React.ReactNode }) {
   const storeRef = useRef<AppStore | null>(null);
@@ -18,7 +19,7 @@ export default function StoreProvider({ children }: { children: React.ReactNode 
   return (
     <Provider store={storeRef.current}>
       <PersistGate loading={null} persistor={persistorRef.current!}>
-        {children}
+        <AuthGuard>{children}</AuthGuard>
       </PersistGate>
     </Provider>
   );
